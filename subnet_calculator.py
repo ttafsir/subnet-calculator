@@ -24,16 +24,47 @@ Output:
 """
 import ipaddress
 
-
 def main():
     """
     Execution of the script starts here
     """
 
     # Uncomment the line below the print() welcome message
-    # print("IP Subnet Calculator")
+    print("IP Subnet Calculator")
 
+    # define a variable
+    network = input('Network => ')
 
+    # network object
+    network_object = ipaddress.ip_network(network, strict=False)
+    netmask = str(network_object.netmask)
+    netmask_octets = netmask.split('.')
+
+    wilcard_octets = []
+    for octet in netmask_octets:
+        wildcard = 255 - int(octet)
+        wilcard_octets.append(str(wildcard))
+
+    dot = '.'
+    wildcard = dot.join(wilcard_octets)
+
+    hosts = list(network_object.hosts())
+    first = hosts[0]
+    last = hosts[-1]
+    num_of_addresses = len(hosts)
+
+    is_private = network_object.is_private
+
+    if is_private:
+        print(f'Network:   {network_object} (private network)')
+    else:
+        print(f'Network:   {network_object}')
+    print(f'Netmask:   {network_object.netmask} = {network_object.prefixlen}')
+    print(f'Wildcard:  {wildcard}')
+    print(f'Broadcast: {network_object.broadcast_address}')
+    print(f'HostMin:   {first}')
+    print(f'HostMax:   {last}')
+    print(f'Hosts/Net: {num_of_addresses}')
 
 if __name__ == "__main__":
     main()
